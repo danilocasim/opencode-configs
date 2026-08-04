@@ -25,6 +25,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 MD_CODE_SPAN_RE = re.compile(r"`([^`\n]+?\.md)`")
+MD_LINK_DESTINATION_RE = re.compile(
+    r"!?(?:\[[^\]\n]*\])\(\s*(?:<(?P<angle>[^>\n]+)>|(?P<bare>[^\s)]+))"
+)
+MD_INLINE_CODE_SPAN_RE = re.compile(r"`[^`\n]*`")
+MD_FENCE_OPEN_RE = re.compile(r"^[ \t]{0,3}(?P<marker>`{3,}|~{3,})")
+EXPLICIT_LOCAL_MD_REF_RE = re.compile(
+    r"(?<![A-Za-z0-9_.-])(?P<ref>(?:skills/|\./|\.\./)[^\s`<>()\[\]\"']+\.md)(?=$|[\s`<>()\[\]\"',.;:!?])"
+)
+URL_SCHEME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
 
 
 V2_SKILLS = {
@@ -50,6 +59,8 @@ V2_SKILLS = {
     "skill-authoring",
     "testing",
     "security",
+    "parallel-ticket-worktrees",
+    "web-designer",
 }
 
 
@@ -112,11 +123,10 @@ def _parse_frontmatter(text: str) -> dict[str, str] | None:
 
 
 def _extract_md_code_spans(text: str) -> set[str]:
-    """Extract backticked `.md` file references from markdown text.
+    """Extract backticked `.md` basenames for V2 router coverage.
 
-    This is a lightweight consistency check used to catch broken router links in
-    `SKILL.md`. It intentionally ignores non-backticked links and does not try
-    to fully parse markdown.
+    Backticked filenames are useful evidence that a V2 router exposes an
+    existing leaf, but are not necessarily local filesystem targets.
     """
 
     out: set[str] = set()
@@ -133,6 +143,61 @@ def _extract_md_code_spans(text: str) -> set[str]:
             continue
         out.add(ref)
     return out
+
+
+def _without_fenced_code_blocks(text: str) -> str:
+    """Remove fenced code examples before looking for active Markdown links."""
+
+    lines: list[str] = []
+    fence: str | None = None
+
+    for line in text.splitlines(keepends=True):
+        if fence is None:
+            match = MD_FENCE_OPEN_RE.match(line)
+            if match:
+                fence = match.group("marker")
+            else:
+                lines.append(line)
+            continue
+
+        stripped = line.lstrip(" \t")
+        marker = re.match(re.escape(fence[0]) + r"+", stripped)
+        if (
+            marker
+            and len(marker.group()) >= len(fence)
+            and not stripped[marker.end() :].strip()
+        ):
+            fence = None
+
+    return "".join(lines)
+
+
+def _extract_local_md_references(text: str) -> set[str]:
+    """Extract `.md` references that explicitly identify local targets.
+
+    A bare inline-code filename can name an artifact or a document owned by a
+    different skill, so it is not a filesystem reference by itself. Markdown
+    link destinations are explicit targets; outside those links, only root
+    ``skills/...`` and relative ``./`` or ``../`` paths are local references.
+    """
+
+    refs: set[str] = set()
+    reference_text = _without_fenced_code_blocks(text)
+
+    link_text = MD_INLINE_CODE_SPAN_RE.sub("", reference_text)
+    for match in MD_LINK_DESTINATION_RE.finditer(link_text):
+        ref = (match.group("angle") or match.group("bare")).strip()
+        if (
+            ref.endswith(".md")
+            and not URL_SCHEME_RE.match(ref)
+            and not ref.startswith("//")
+        ):
+            refs.add(ref)
+
+    for match in EXPLICIT_LOCAL_MD_REF_RE.finditer(reference_text):
+        refs.add(match.group("ref"))
+
+    return refs
 
 
 def lint_skill_dir(skill_dir: Path) -> list[Issue]:
@@ -174,10 +239,11 @@ def lint_skill_dir(skill_dir: Path) -> list[Issue]:
             )
         )
 
-    refs = _extract_md_code_spans(text)
-    refs_by_basename = {Path(r).name for r in refs}
+    refs = _extract_local_md_references(text)
+    code_span_refs = _extract_md_code_spans(text)
+    refs_by_basename = {Path(r).name for r in code_span_refs}
 
-    # Router link validation: keep SKILL.md references from silently breaking.
+    # Keep explicitly local SKILL.md references from silently breaking.
     for ref in sorted(refs):
         if ref.startswith("skills/"):
             target = ROOT / ref

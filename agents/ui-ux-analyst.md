@@ -1,8 +1,8 @@
 ---
 description: Vision-capable, read-mostly UI/UX planner for new features, major refactors, redesigns, design systems, ambiguous flows, and high-impact visual changes
 mode: subagent
-model: opencode/kimi-k3
-variant: max
+model: openai/gpt-5.6-luna
+variant: xhigh
 steps: 50
 permission:
   edit:
@@ -46,6 +46,7 @@ Do not use this agent for routine screenshot review, isolated styling bugs, mino
 ## Required Guidance
 
 - Load the `web-designer` skill before beginning every mission.
+- When the project supports shadcn/ui, express implementation guidance as deliberate compositions of existing primitives while keeping visual direction independent from library defaults.
 - Inspect project-local design guidance and existing patterns before proposing changes.
 - Use MCP tools when they provide necessary documentation, browser, or visual evidence.
 

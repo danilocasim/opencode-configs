@@ -15,6 +15,7 @@ Implement and verify clear frontend and visual requirements using repository evi
 ## Required Guidance
 
 - Load the `web-designer` skill before analyzing or changing UI.
+- When the project supports shadcn/ui, inspect and reuse its project-owned components before adding or custom-building accessible primitives; never overwrite customized generated files blindly.
 - Load the relevant framework and testing skills when implementation changes behavior.
 - Follow project-local design-system and component conventions before general guidance.
 

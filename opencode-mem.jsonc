@@ -77,8 +77,8 @@
   //   OpenAI (API key):          "opencodeProvider": "openai",     "opencodeModel": "gpt-4o-mini"
   //
   // The provider name must match a connected provider in opencode (check with: opencode providers list)
-  // "opencodeProvider": "anthropic",
-  // "opencodeModel": "claude-haiku-4-5-20251001",
+  "opencodeProvider": "openai",
+  "opencodeModel": "inherit",
 
   // ============================================
   // Auto-Capture Settings (REQUIRES EXTERNAL API)
@@ -90,13 +90,9 @@
 
   "autoCaptureEnabled": true,
 
-  // Provider type: "openai-chat" | "openai-responses" | "anthropic"
-  "memoryProvider": "openai-chat",
-
-  // REQUIRED for auto-capture (all 3 must be set):
-  "memoryModel": "gpt-4o-mini",
-  "memoryApiUrl": "https://api.openai.com/v1",
-  "memoryApiKey": "sk-...",
+  // Existing OpenCode authentication is used through opencodeProvider above.
+  // Keep manual memoryProvider/memoryModel/memoryApiUrl/memoryApiKey unset so
+  // no credential is stored in this repository.
 
   // API Key Formats:
   // Direct value:        "sk-..."

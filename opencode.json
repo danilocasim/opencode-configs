@@ -1,6 +1,24 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "autoupdate": true,
+  "agent": {
+    "build": {
+      "model": "openai/gpt-5.6-terra",
+      "variant": "xhigh"
+    },
+    "explore": {
+      "model": "openai/gpt-5.6-terra",
+      "variant": "xhigh"
+    },
+    "general": {
+      "model": "openai/gpt-5.6-terra",
+      "variant": "xhigh"
+    },
+    "plan": {
+      "model": "openai/gpt-5.6-terra",
+      "variant": "xhigh"
+    }
+  },
   "compaction": {
     "auto": true,
     "prune": true
@@ -13,7 +31,16 @@
     },
     "eslint": {
       "command": ["npx", "eslint", "--fix", "$FILE"],
-      "extensions": [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".mts", ".cts"]
+      "extensions": [
+        ".js",
+        ".jsx",
+        ".ts",
+        ".tsx",
+        ".mjs",
+        ".cjs",
+        ".mts",
+        ".cts"
+      ]
     },
     "gofmt": {
       "command": ["gofmt", "-w", "$FILE"],
@@ -28,7 +55,11 @@
       "extensions": [".rb", ".rake", ".gemspec", ".ru"]
     },
     "ruff": {
-      "command": ["bash", "-lc", "ruff check --fix \"$FILE\" && ruff format \"$FILE\""],
+      "command": [
+        "bash",
+        "-lc",
+        "ruff check --fix \"$FILE\" && ruff format \"$FILE\""
+      ],
       "extensions": [".py", ".pyi"]
     },
     "rustfmt": {
@@ -77,7 +108,7 @@
       "url": "https://mcp.sentry.dev/mcp"
     }
   },
-  "model": "ollama/minimax-m2.7:cloud",
+  "model": "openai/gpt-5.6-terra",
   "permission": {
     "bash": {
       "*": "allow",
@@ -106,14 +137,19 @@
     },
     "external_directory": {
       "*": "ask",
-      "/Users/mm/.config/opencode": "allow",
-      "/Users/mm/.config/opencode/**": "allow",
-      "/Users/mm/.claude/skills": "allow",
-      "/Users/mm/.claude/skills/**": "allow",
-      "/Users/mm/.agents": "allow",
-      "/Users/mm/.agents/**": "allow",
-      "/Users/mm/Pictures/Screenshots": "allow",
-      "/Users/mm/Pictures/Screenshots/*": "allow"
+      "~/.agent-configs": "allow",
+      "~/.agent-configs/**": "allow",
+      "~/.claude/CLAUDE.md": "allow",
+      "~/.claude/commands/**": "allow",
+      "~/.claude/skills/**": "allow",
+      "~/.agents/skills/**": "allow",
+      "~/.codex/AGENTS.md": "allow",
+      "~/.config/kilo/AGENTS.md": "allow",
+      "~/.config/kilo/commands/**": "allow",
+      "~/.config/kilo/instructions/**": "allow",
+      "~/.config/kilo/skills/**": "allow",
+      "~/Pictures/Screenshots": "allow",
+      "~/Pictures/Screenshots/*": "allow"
     },
     "read": {
       "*": "allow",

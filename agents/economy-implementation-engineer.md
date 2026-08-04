@@ -1,8 +1,8 @@
 ---
 description: Text-only, cost-efficient implementer for normal features, bug fixes, tests, refactors, integrations, and documentation
 mode: subagent
-model: deepseek/deepseek-v4-flash
-variant: max
+model: openai/gpt-5.6-terra
+variant: xhigh
 permission:
   task:
     "*": deny

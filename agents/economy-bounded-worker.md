@@ -1,8 +1,8 @@
 ---
 description: Text-only, low-cost worker for narrow, repetitive, isolated, and objectively verifiable implementation tasks
 mode: subagent
-model: deepseek/deepseek-v4-flash
-variant: max
+model: openai/gpt-5.6-terra
+variant: xhigh
 permission:
   task: deny
 ---

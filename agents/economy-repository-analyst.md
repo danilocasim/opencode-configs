@@ -1,8 +1,8 @@
 ---
 description: Text-only, low-cost read-only analyst for repository mapping, execution tracing, dependency analysis, and impact assessment
 mode: subagent
-model: deepseek/deepseek-v4-flash
-variant: max
+model: openai/gpt-5.6-terra
+variant: xhigh
 permission:
   edit: deny
   write: deny

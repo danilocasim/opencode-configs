@@ -7,15 +7,16 @@ This repository contains a comprehensive OpenCode configuration system designed 
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Agent Types](#agent-types)
-3. [Skills Inventory](#skills-inventory)
-4. [Skill Structure & Philosophy](#skill-structure--philosophy)
-5. [Commands](#commands)
-6. [Configuration](#configuration)
-7. [Workflow Guide](#workflow-guide)
-8. [Project Setup](#project-setup)
-9. [Quality Assurance](#quality-assurance)
-10. [Contributing](#contributing)
+2. [Shared Tool Layout](#shared-tool-layout)
+3. [Agent Types](#agent-types)
+4. [Skills Inventory](#skills-inventory)
+5. [Skill Structure & Philosophy](#skill-structure--philosophy)
+6. [Commands](#commands)
+7. [Configuration](#configuration)
+8. [Workflow Guide](#workflow-guide)
+9. [Project Setup](#project-setup)
+10. [Quality Assurance](#quality-assurance)
+11. [Contributing](#contributing)
 
 ---
 
@@ -23,7 +24,7 @@ This repository contains a comprehensive OpenCode configuration system designed 
 
 This repository provides a complete OpenCode configuration system with:
 
-- **35+ specialized skills** covering languages, frameworks, and cross-cutting concerns
+- **75+ specialized skills** covering languages, frameworks, design, and cross-cutting concerns
 - **Router-first architecture** for precise, minimal context loading
 - **Premium and economy coding tiers with shared specialist workers**
 - **25+ custom commands** for common workflows
@@ -60,6 +61,26 @@ This is the glue that binds everything together: the router-first architecture, 
 
 ---
 
+## Shared Tool Layout
+
+`~/.agent-configs` is the canonical shared entry point and links to this
+repository. Each tool keeps its authentication, provider configuration, cache,
+sessions, and state in its native directory; only portable instructions,
+compatible agents, commands, and skills are shared.
+
+| Tool        | Shared paths                                                                                                   |
+| ----------- | -------------------------------------------------------------------------------------------------------------- |
+| OpenCode    | Native `AGENTS.md`, `commands/`, `instructions/`, and `skills/` in this repository                             |
+| Claude Code | `~/.claude/CLAUDE.md`, `~/.claude/commands`, and `~/.claude/skills`                                            |
+| Codex       | `~/.codex/AGENTS.md` and user skills through `~/.agents/skills`; `~/.codex/skills/.system` remains Codex-owned |
+| Kilo        | `~/.config/kilo/AGENTS.md`, `agents/`, `commands/`, `instructions/`, and `skills/`                             |
+
+The replaced tool-specific directories are retained beside their original
+locations with the `.pre-shared-config` suffix. Do not symlink whole tool homes:
+they contain credentials and mutable application state.
+
+---
+
 ## Agent Types
 
 Agents define the model, execution boundary, permissions, and cost profile. Skills define reusable methods and constraints. Skills are selected from the actual task; they are not permanently assigned to a worker.
@@ -78,21 +99,21 @@ Agents define the model, execution boundary, permissions, and cost profile. Skil
 
 #### Economy tier
 
-| Agent                               | Model                        | Reasoning | Responsibility                               |
-| ----------------------------------- | ---------------------------- | --------- | -------------------------------------------- |
-| **economy-orchestrator**            | `openai/gpt-5.6-luna`        | `xhigh`   | Vision-capable, cost-controlled primary      |
-| **economy-implementation-engineer** | `deepseek/deepseek-v4-flash` | `max`     | Text-only, cost-efficient implementation     |
-| **economy-bounded-worker**          | `deepseek/deepseek-v4-flash` | `max`     | Text-only mechanical and tightly scoped work |
-| **economy-repository-analyst**      | `deepseek/deepseek-v4-flash` | `max`     | Text-only read-only repository analysis      |
+| Agent                               | Model                  | Reasoning | Responsibility                               |
+| ----------------------------------- | ---------------------- | --------- | -------------------------------------------- |
+| **economy-orchestrator**            | `openai/gpt-5.6-terra` | `xhigh`   | Text-only, cost-controlled primary           |
+| **economy-implementation-engineer** | `openai/gpt-5.6-terra` | `xhigh`   | Text-only, cost-efficient implementation     |
+| **economy-bounded-worker**          | `openai/gpt-5.6-terra` | `xhigh`   | Text-only mechanical and tightly scoped work |
+| **economy-repository-analyst**      | `openai/gpt-5.6-terra` | `xhigh`   | Text-only read-only repository analysis      |
 
-The Economy Orchestrator accepts image and PDF input. The DeepSeek workers are text-only and must not receive visual-dependent missions. DeepSeek's direct API serves the V4 Flash release dated July 31, 2026 under this stable model ID.
+The Economy Orchestrator and its economy workers are text-only and must not receive visual-dependent missions. Route those missions to the Visual Engineer or UI/UX Analyst.
 
 #### Shared UI specialists
 
 | Agent               | Model                 | Reasoning | Responsibility                                                                    |
 | ------------------- | --------------------- | --------- | --------------------------------------------------------------------------------- |
 | **visual-engineer** | `openai/gpt-5.6-luna` | `xhigh`   | UI implementation, image/PDF inspection, video frame analysis, browser validation |
-| **ui-ux-analyst**   | `opencode/kimi-k3`    | `max`     | High-impact image/video UI/UX analysis and Markdown planning; no product code     |
+| **ui-ux-analyst**   | `openai/gpt-5.6-luna` | `xhigh`   | High-impact image/video UI/UX analysis and Markdown planning; no product code     |
 
 The Orchestrator may recommend skills in a mission when a particular constraint matters. Each worker still inspects the task and repository instructions and makes the final skill selection.
 
@@ -177,12 +198,13 @@ Skills are the heart of this system. Each skill is a router that points to focus
 
 ### Meta Skills
 
-| Skill               | Description                   | Purpose                                                       |
-| ------------------- | ----------------------------- | ------------------------------------------------------------- |
-| **skill-authoring** | Standards for creating skills | authoring-standard, recipes-standard, benchmarks, skills-lint |
-| **documentation**   | Doc style router              | Routes to language-specific doc formats                       |
-| **system-design**   | Design patterns               | Architecture, data modeling, API design, UX flows, UI specs   |
-| **web-design**      | UI/UX implementation          | Routing table for 100+ components across 8 categories         |
+| Skill                         | Description                   | Purpose                                                       |
+| ----------------------------- | ----------------------------- | ------------------------------------------------------------- |
+| **skill-authoring**           | Standards for creating skills | authoring-standard, recipes-standard, benchmarks, skills-lint |
+| **documentation**             | Doc style router              | Routes to language-specific doc formats                       |
+| **system-design**             | Design patterns               | Architecture, data modeling, API design, UX flows, UI specs   |
+| **web-designer**              | UI/UX design direction        | Creative direction, critique, accessibility, shadcn handoff   |
+| **parallel-ticket-worktrees** | Parallel Git isolation        | Safe ticket setup, delegation, integration, and cleanup       |
 
 ---
 
@@ -724,4 +746,5 @@ The system is designed to make AI coding assistants:
 4. **Efficient** - Loads only necessary context
 
 **Start with `/skills` to see the skill loading workflow in action.**
+
 # opencode-configs

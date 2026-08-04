@@ -1,6 +1,8 @@
 ---
 description: Brand strategist and content marketing lead - positioning, messaging, content strategy, and campaign planning
 mode: primary
+model: openai/gpt-5.6-terra
+variant: xhigh
 temperature: 0.4
 maxSteps: 40
 tools:
@@ -9,14 +11,17 @@ tools:
 permission:
   external_directory:
     "*": ask
-    "/Users/mm/.config/opencode": allow
-    "/Users/mm/.config/opencode/**": allow
-    "/Users/mm/.claude/skills": allow
-    "/Users/mm/.claude/skills/**": allow
-    "/Users/mm/.agents": allow
-    "/Users/mm/.agents/**": allow
-    "/Users/mm/Pictures/Screenshots": allow
-    "/Users/mm/Pictures/Screenshots/*": allow
+    "~/.agent-configs/**": allow
+    "~/.claude/CLAUDE.md": allow
+    "~/.claude/commands/**": allow
+    "~/.claude/skills/**": allow
+    "~/.agents/skills/**": allow
+    "~/.codex/AGENTS.md": allow
+    "~/.config/kilo/AGENTS.md": allow
+    "~/.config/kilo/commands/**": allow
+    "~/.config/kilo/instructions/**": allow
+    "~/.config/kilo/skills/**": allow
+    "~/Pictures/Screenshots/*": allow
   edit:
     "*": deny
     "*.md": allow
