@@ -1,0 +1,240 @@
+{
+  "$schema": "https://opencode.ai/theme.json",
+  "defs": {
+    "deep-space": "#0f0c29",
+    "cosmic-purple": "#1a0b2e",
+    "nebula-bg": "#16213e",
+    "void-purple": "#1f1b3d",
+    "cyber-panel": "#242448",
+    "element-bg": "#2d2d55",
+    "border-cyber": "#3d3d6b",
+    "border-active": "#00d9ff",
+    "border-subtle": "#4a4a7a",
+    "starlight": "#e0f7ff",
+    "moon-glow": "#b8c5ff",
+    "nebula-gas": "#8892b0",
+    "electric-cyan": "#00f5ff",
+    "neon-cyan": "#00ffff",
+    "hot-pink": "#ff006e",
+    "neon-pink": "#ff00ff",
+    "magenta": "#ff10f0",
+    "plasma-purple": "#bd00ff",
+    "neon-purple": "#9d00ff",
+    "electric-violet": "#7b2cbf",
+    "matrix-mint": "#00ff9d",
+    "neon-green": "#39ff14",
+    "toxic-green": "#00ff88",
+    "cyber-lime": "#ccff00",
+    "electric-lime": "#aaff00",
+    "hot-coral": "#ff4757",
+    "sunset-orange": "#ff6b35",
+    "neon-orange": "#ff9f43",
+    "blood-red": "#ff0040",
+    "neon-red": "#ff2e63",
+    "alert-crimson": "#ff1744",
+    "cyber-gold": "#ffd700",
+    "plasma-yellow": "#ffff00"
+  },
+  "theme": {
+    "primary": {
+      "dark": "electric-cyan",
+      "light": "neon-cyan"
+    },
+    "secondary": {
+      "dark": "hot-pink",
+      "light": "neon-pink"
+    },
+    "accent": {
+      "dark": "matrix-mint",
+      "light": "neon-green"
+    },
+    "error": {
+      "dark": "blood-red",
+      "light": "neon-red"
+    },
+    "warning": {
+      "dark": "sunset-orange",
+      "light": "hot-coral"
+    },
+    "success": {
+      "dark": "matrix-mint",
+      "light": "toxic-green"
+    },
+    "info": {
+      "dark": "neon-cyan",
+      "light": "electric-cyan"
+    },
+    "text": {
+      "dark": "starlight",
+      "light": "deep-space"
+    },
+    "textMuted": {
+      "dark": "moon-glow",
+      "light": "nebula-gas"
+    },
+    "background": {
+      "dark": "cosmic-purple",
+      "light": "#f8fafc"
+    },
+    "backgroundPanel": {
+      "dark": "void-purple",
+      "light": "#e2e8f0"
+    },
+    "backgroundElement": {
+      "dark": "nebula-bg",
+      "light": "#ffffff"
+    },
+    "border": {
+      "dark": "border-cyber",
+      "light": "#cbd5e1"
+    },
+    "borderActive": {
+      "dark": "electric-cyan",
+      "light": "electric-cyan"
+    },
+    "borderSubtle": {
+      "dark": "border-subtle",
+      "light": "#e2e8f0"
+    },
+    "diffAdded": {
+      "dark": "matrix-mint",
+      "light": "neon-green"
+    },
+    "diffRemoved": {
+      "dark": "blood-red",
+      "light": "neon-red"
+    },
+    "diffContext": {
+      "dark": "moon-glow",
+      "light": "nebula-gas"
+    },
+    "diffHunkHeader": {
+      "dark": "border-cyber",
+      "light": "#94a3b8"
+    },
+    "diffHighlightAdded": {
+      "dark": "cyber-lime",
+      "light": "#22c55e"
+    },
+    "diffHighlightRemoved": {
+      "dark": "alert-crimson",
+      "light": "#ef4444"
+    },
+    "diffAddedBg": {
+      "dark": "#0d3b25",
+      "light": "#dcfce7"
+    },
+    "diffRemovedBg": {
+      "dark": "#3b0d1f",
+      "light": "#fee2e2"
+    },
+    "diffContextBg": {
+      "dark": "cyber-panel",
+      "light": "#f1f5f9"
+    },
+    "diffLineNumber": {
+      "dark": "nebula-gas",
+      "light": "#64748b"
+    },
+    "diffAddedLineNumberBg": {
+      "dark": "#0f2f1a",
+      "light": "#dcfce7"
+    },
+    "diffRemovedLineNumberBg": {
+      "dark": "#2f0f15",
+      "light": "#fee2e2"
+    },
+    "markdownText": {
+      "dark": "starlight",
+      "light": "deep-space"
+    },
+    "markdownHeading": {
+      "dark": "electric-cyan",
+      "light": "electric-cyan"
+    },
+    "markdownLink": {
+      "dark": "hot-pink",
+      "light": "neon-pink"
+    },
+    "markdownLinkText": {
+      "dark": "neon-cyan",
+      "light": "electric-cyan"
+    },
+    "markdownCode": {
+      "dark": "matrix-mint",
+      "light": "neon-green"
+    },
+    "markdownBlockQuote": {
+      "dark": "moon-glow",
+      "light": "nebula-gas"
+    },
+    "markdownEmph": {
+      "dark": "plasma-purple",
+      "light": "magenta"
+    },
+    "markdownStrong": {
+      "dark": "cyber-gold",
+      "light": "cyber-lime"
+    },
+    "markdownHorizontalRule": {
+      "dark": "border-cyber",
+      "light": "#cbd5e1"
+    },
+    "markdownListItem": {
+      "dark": "electric-cyan",
+      "light": "electric-cyan"
+    },
+    "markdownListEnumeration": {
+      "dark": "hot-pink",
+      "light": "neon-pink"
+    },
+    "markdownImage": {
+      "dark": "hot-pink",
+      "light": "neon-pink"
+    },
+    "markdownImageText": {
+      "dark": "neon-cyan",
+      "light": "electric-cyan"
+    },
+    "markdownCodeBlock": {
+      "dark": "starlight",
+      "light": "deep-space"
+    },
+    "syntaxComment": {
+      "dark": "nebula-gas",
+      "light": "#64748b"
+    },
+    "syntaxKeyword": {
+      "dark": "hot-pink",
+      "light": "neon-pink"
+    },
+    "syntaxFunction": {
+      "dark": "electric-cyan",
+      "light": "electric-cyan"
+    },
+    "syntaxVariable": {
+      "dark": "starlight",
+      "light": "deep-space"
+    },
+    "syntaxString": {
+      "dark": "matrix-mint",
+      "light": "neon-green"
+    },
+    "syntaxNumber": {
+      "dark": "sunset-orange",
+      "light": "hot-coral"
+    },
+    "syntaxType": {
+      "dark": "plasma-purple",
+      "light": "neon-purple"
+    },
+    "syntaxOperator": {
+      "dark": "sunset-orange",
+      "light": "hot-coral"
+    },
+    "syntaxPunctuation": {
+      "dark": "moon-glow",
+      "light": "#64748b"
+    }
+  }
+}

@@ -1,0 +1,4 @@
+[submodule "plugin/shell-strategy"]
+	path = plugin/shell-strategy
+	url = https://github.com/JRedeker/opencode-shell-strategy.git
+	branch = trunk
