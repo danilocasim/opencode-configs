@@ -8,6 +8,8 @@ $ARGUMENTS
 
 If no concrete scope is provided, ask for the diff or file list and stop. Do not perform a repository-wide audit.
 
+For an explicitly scoped WIP review, inspect staged and unstaged diffs plus relevant untracked files; an empty branch diff does not mean there is no WIP. For committed-only review, stay committed-only. Preserve unrelated dirty work and report any requested layer you could not inspect.
+
 Budget:
 
 1. Review only the supplied scope and directly related context.

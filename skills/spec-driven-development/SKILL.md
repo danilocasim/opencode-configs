@@ -1,34 +1,32 @@
 ---
 name: spec-driven-development
-description: Creates specs before coding. Use when starting a new project, feature, or significant change and no specification exists yet. Use when requirements are unclear, ambiguous, or only exist as a vague idea.
+description: Write a specification when explicitly requested or when significant product requirements remain unresolved. Clear bounded implementation requests already supply the contract and do not need a new spec ceremony.
 ---
 
 # Spec-Driven Development
 
 ## Overview
 
-Write a structured specification before writing any code. The spec is the shared source of truth between you and the human engineer — it defines what we're building, why, and how we'll know it's done. Code without a spec is guessing.
+For work that needs specification, define what we're building, why, and how we'll know it's done before implementation. The user's clear request or accepted ticket can already be the shared contract; a separate spec file is not always necessary.
 
 ## When to Use
 
-- Starting a new project or feature
+- A requested specification for a new project or feature
 - Requirements are ambiguous or incomplete
-- The change touches multiple files or modules
-- You're about to make an architectural decision
-- The task would take more than 30 minutes to implement
+- A consequential architectural or product decision remains unresolved
 
-**When NOT to use:** Single-line fixes, typo corrections, or changes where requirements are unambiguous and self-contained.
+**When NOT to use:** Clear bounded changes, even across multiple files, or implementation of an already accepted spec/ticket. Proceed with the requested work and verification instead of creating new approval gates.
 
 ## The Gated Workflow
 
-Spec-driven development has four phases. Do not advance to the next phase until the current one is validated.
+For significant specification work, use these phases at the level the user requested. Existing approvals remain valid; ask again only for a material scope/contract change or an explicitly gated action. A spec-only request ends before implementation.
 
 ```
 SPECIFY ──→ PLAN ──→ TASKS ──→ IMPLEMENT
    │          │        │          │
    ▼          ▼        ▼          ▼
- Human      Human    Human      Human
- reviews    reviews  reviews    reviews
+ Validate   Validate Validate   Verify
+ contract   approach tasks      behavior
 ```
 
 ### Phase 1: Specify
@@ -46,13 +44,14 @@ ASSUMPTIONS I'M MAKING:
 → Correct me now or I'll proceed with these.
 ```
 
-Don't silently fill in ambiguous requirements. The spec's entire purpose is to surface misunderstandings *before* code gets written — assumptions are the most dangerous form of misunderstanding.
+Don't silently fill in ambiguous requirements. The spec's entire purpose is to surface misunderstandings _before_ code gets written — assumptions are the most dangerous form of misunderstanding.
 
 **Write a spec document covering these six core areas:**
 
 1. **Objective** — What are we building and why? Who is the user? What does success look like?
 
 2. **Commands** — Full executable commands with flags, not just tool names.
+
    ```
    Build: npm run build
    Test: npm test -- --coverage
@@ -61,6 +60,7 @@ Don't silently fill in ambiguous requirements. The spec's entire purpose is to s
    ```
 
 3. **Project Structure** — Where source code lives, where tests go, where docs belong.
+
    ```
    src/           → Application source code
    src/components → React components
@@ -85,32 +85,41 @@ Don't silently fill in ambiguous requirements. The spec's entire purpose is to s
 # Spec: [Project/Feature Name]
 
 ## Objective
+
 [What we're building and why. User stories or acceptance criteria.]
 
 ## Tech Stack
+
 [Framework, language, key dependencies with versions]
 
 ## Commands
+
 [Build, test, lint, dev — full commands]
 
 ## Project Structure
+
 [Directory layout with descriptions]
 
 ## Code Style
+
 [Example snippet + key conventions]
 
 ## Testing Strategy
+
 [Framework, test locations, coverage requirements, test levels]
 
 ## Boundaries
+
 - Always: [...]
 - Ask first: [...]
 - Never: [...]
 
 ## Success Criteria
+
 [How we'll know this is done — specific, testable conditions]
 
 ## Open Questions
+
 [Anything unresolved that needs human input]
 ```
 
@@ -140,7 +149,7 @@ With the validated spec, generate a technical implementation plan:
 
 > Follow `planning-and-task-breakdown` for the dependency-graph mapping and vertical-slicing mechanics behind these steps; it is the canonical source. The bullets above are a lightweight summary; if they ever diverge, `planning-and-task-breakdown` takes precedence.
 >
-> **Output convention:** Save the plan to `tasks/plan.md` and the task list to `tasks/todo.md`, per the `/plan` command convention. Create `tasks/` if it does not exist. Downstream commands (`/build`, etc.) expect these paths.
+> **Output convention:** Follow the user's paths or the repository's established planning workflow. Persist documents only when requested or required there; no global command dependency mandates `tasks/plan.md` or `tasks/todo.md`.
 
 The plan should be reviewable: the human should be able to read it and say "yes, that's the right approach" or "no, change X."
 
@@ -157,6 +166,7 @@ Break the plan into discrete, implementable tasks:
 > Follow `planning-and-task-breakdown` for the full task-sizing and dependency-ordering mechanics; it is the canonical source. The template below is a lightweight inline form; if they ever diverge, `planning-and-task-breakdown` takes precedence.
 
 **Task template:**
+
 ```markdown
 - [ ] Task: [Description]
   - Acceptance: [What must be true when done]
@@ -166,7 +176,11 @@ Break the plan into discrete, implementable tasks:
 
 ### Phase 4: Implement
 
-Execute tasks one at a time following `skills/incremental-implementation/SKILL.md` (`incremental-implementation`) and `skills/test-driven-development/SKILL.md` (`test-driven-development`). Use `skills/context-engineering/SKILL.md` (`context-engineering`) to load the right spec sections and source files at each step rather than flooding the agent with the entire spec.
+Execute accepted tasks directly in dependency order, using `skills/testing/SKILL.md`
+for the canonical red-green-refactor loop. Load `incremental-implementation` only
+when multiple verification cycles need explicit slicing, and `context-engineering`
+only when context setup or retrieval is itself a problem. Reuse relevant source
+and spec pointers without loading a mandatory skill chain.
 
 ## Keeping the Spec Alive
 
@@ -174,18 +188,18 @@ The spec is a living document, not a one-time artifact:
 
 - **Update when decisions change** — If you discover the data model needs to change, update the spec first, then implement.
 - **Update when scope changes** — Features added or cut should be reflected in the spec.
-- **Commit the spec** — The spec belongs in version control alongside the code.
+- **Version the spec when authorized** — Include it alongside code in an explicitly requested commit; writing a spec does not authorize Git or PR operations.
 - **Reference the spec in PRs** — Link back to the spec section that each PR implements.
 
 ## Common Rationalizations
 
-| Rationalization | Reality |
-|---|---|
-| "This is simple, I don't need a spec" | Simple tasks don't need *long* specs, but they still need acceptance criteria. A two-line spec is fine. |
-| "I'll write the spec after I code it" | That's documentation, not specification. The spec's value is in forcing clarity *before* code. |
-| "The spec will slow us down" | A 15-minute spec prevents hours of rework. Waterfall in 15 minutes beats debugging in 15 hours. |
-| "Requirements will change anyway" | That's why the spec is a living document. An outdated spec is still better than no spec. |
-| "The user knows what they want" | Even clear requests have implicit assumptions. The spec surfaces those assumptions. |
+| Rationalization                       | Reality                                                                                                 |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| "This is simple, I don't need a spec" | Simple tasks don't need _long_ specs, but they still need acceptance criteria. A two-line spec is fine. |
+| "I'll write the spec after I code it" | That's documentation, not specification. The spec's value is in forcing clarity _before_ code.          |
+| "The spec will slow us down"          | A 15-minute spec prevents hours of rework. Waterfall in 15 minutes beats debugging in 15 hours.         |
+| "Requirements will change anyway"     | That's why the spec is a living document. An outdated spec is still better than no spec.                |
+| "The user knows what they want"       | Even clear requests have implicit assumptions. The spec surfaces those assumptions.                     |
 
 ## Red Flags
 
@@ -203,4 +217,4 @@ Before proceeding to implementation, confirm:
 - [ ] The human has reviewed and approved the spec
 - [ ] Success criteria are specific and testable
 - [ ] Boundaries (Always/Ask First/Never) are defined
-- [ ] The spec is saved to a file in the repository
+- [ ] The spec is delivered in the requested form; repository files are created only within authorized scope

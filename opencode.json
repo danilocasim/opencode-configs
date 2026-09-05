@@ -1,22 +1,28 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "autoupdate": true,
+  "autoupdate": "notify",
   "agent": {
     "build": {
-      "model": "openai/gpt-5.6-terra",
-      "variant": "xhigh"
+      "model": "openai/gpt-6-astra",
+      "variant": "high",
+      "permission": {
+        "playwright_*": "allow",
+        "playwright_browser_evaluate": "ask",
+        "playwright_browser_run_code_unsafe": "deny",
+        "zai-mcp-server_*": "allow"
+      }
     },
     "explore": {
       "model": "openai/gpt-5.6-terra",
-      "variant": "xhigh"
+      "variant": "medium"
     },
     "general": {
-      "model": "openai/gpt-5.6-terra",
-      "variant": "xhigh"
+      "model": "openai/gpt-6-astra",
+      "variant": "high"
     },
     "plan": {
-      "model": "openai/gpt-5.6-terra",
-      "variant": "xhigh"
+      "model": "openai/gpt-6-astra",
+      "variant": "high"
     }
   },
   "compaction": {
@@ -75,7 +81,7 @@
     "instructions/git.md",
     "instructions/api.md",
     "instructions/database.md",
-    "plugin/shell-strategy/shell_strategy.md"
+    "instructions/shell.md"
   ],
   "mcp": {
     "context7": {
@@ -91,7 +97,8 @@
     "playwright": {
       "command": [
         "npx",
-        "@playwright/mcp@latest",
+        "-y",
+        "@playwright/mcp@0.0.80",
         "--browser=chromium",
         "--caps=core,vision,pdf,testing",
         "--output-dir=./browser-outputs",
@@ -106,21 +113,42 @@
       "oauth": {},
       "type": "remote",
       "url": "https://mcp.sentry.dev/mcp"
+    },
+    "zai-mcp-server": {
+      "command": ["npx", "-y", "@z_ai/mcp-server@0.1.5"],
+      "enabled": true,
+      "environment": {
+        "Z_AI_API_KEY": "{file:~/.config/opencode/.env.zai-api-key}",
+        "Z_AI_MODE": "ZAI"
+      },
+      "type": "local"
     }
   },
-  "model": "openai/gpt-5.6-terra",
+  "model": "openai/gpt-6-astra",
   "permission": {
     "bash": {
-      "*": "allow",
+      "*": "ask",
+      "pwd": "allow",
+      "git status": "allow",
+      "git status *": "allow",
+      "git diff": "allow",
+      "git diff *": "allow",
+      "git log": "allow",
+      "git log *": "allow",
+      "git show": "allow",
+      "git show *": "allow",
+      "git *--output*": "ask",
+      "git *--ext-diff*": "ask",
+      "git *--textconv*": "ask",
       "chmod *": "ask",
       "chown *": "ask",
       "curl *": "ask",
       "dd *": "ask",
       "git clean *": "ask",
-      "git commit --amend*": "ask",
-      "git push *": "ask",
-      "git rebase *": "ask",
-      "git reset *": "ask",
+      "git commit*": "ask",
+      "git push*": "ask",
+      "git rebase*": "ask",
+      "git reset*": "ask",
       "mv *": "ask",
       "rm *": "ask",
       "sudo *": "ask",
@@ -133,7 +161,8 @@
       "**/.env": "deny",
       "**/.env.*": "deny",
       "**/.ssh/**": "deny",
-      "**/secrets/**": "deny"
+      "**/secrets/**": "deny",
+      "**/opencode/service.json": "deny"
     },
     "external_directory": {
       "*": "ask",
@@ -165,8 +194,12 @@
       "**/secrets/**": "deny",
       "*.env": "deny",
       "*.env.*": "deny",
-      "*.pem": "deny"
+      "*.pem": "deny",
+      "**/opencode/service.json": "deny"
     },
+    "playwright_*": "deny",
+    "playwright_browser_run_code_unsafe": "deny",
+    "zai-mcp-server_*": "deny",
     "skill": {
       "*": "allow"
     },
@@ -175,14 +208,13 @@
     }
   },
   "plugin": [
-    "@ex-machina/opencode-anthropic-auth",
-    "opencode-dynamic-context-pruning",
-    "@nick-vi/opencode-type-inject",
-    "opencode-mem"
+    "@ex-machina/opencode-anthropic-auth@1.8.1",
+    "@nick-vi/opencode-type-inject@1.5.2",
+    "opencode-mem@2.23.0"
   ],
   "share": "manual",
   "shell": "zsh",
-  "subagent_depth": 2,
+  "subagent_depth": 1,
   "watcher": {
     "ignore": [
       "**/.git/**",

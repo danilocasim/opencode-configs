@@ -47,15 +47,15 @@ Every creative output should have:
 
 ## Routing table
 
-| Need | Load |
-| --- | --- |
-| Define goals, audience, constraints, and success criteria | `creative-brief.md` |
-| Establish the visual thesis, type, color, surface, imagery, and motion stance | `visual-direction.md` |
-| Plan hierarchy, layout rhythm, density, and focal points | `composition.md` |
-| Define flows, affordances, states, feedback, and recovery | `interaction-ux.md` |
+| Need                                                                               | Load                          |
+| ---------------------------------------------------------------------------------- | ----------------------------- |
+| Define goals, audience, constraints, and success criteria                          | `creative-brief.md`           |
+| Establish the visual thesis, type, color, surface, imagery, and motion stance      | `visual-direction.md`         |
+| Plan hierarchy, layout rhythm, density, and focal points                           | `composition.md`              |
+| Define flows, affordances, states, feedback, and recovery                          | `interaction-ux.md`           |
 | Specify breakpoint behavior, keyboard use, semantics, contrast, and reduced motion | `responsive-accessibility.md` |
-| Audit an existing interface and remove generic or incoherent choices | `critique.md` |
-| Translate approved direction into components, tokens, states, and shadcn/ui work | `implementation-handoff.md` |
+| Audit an existing interface and remove generic or incoherent choices               | `critique.md`                 |
+| Translate approved direction into components, tokens, states, and shadcn/ui work   | `implementation-handoff.md`   |
 
 ## Typical load combinations
 
@@ -75,6 +75,11 @@ Every creative output should have:
 6. Implement only when requested, then verify in a real browser at representative viewports.
 7. Run the anti-slop critique and repair the weakest visible decision.
 
+Work directly in the selected session by default, including economy sessions.
+Scale the design notes to the task: a bounded correction with approved direction
+does not need a new design ceremony or specialist handoff. Optional specialist
+help needs parent approval and configured task permissions/depth.
+
 ## Hard rules
 
 - No generic SaaS hero, feature-card grid, icon row, or dashboard shell by default.
@@ -87,8 +92,8 @@ Every creative output should have:
 
 ## Stop triggers
 
-- Materially ambiguous user flow or information architecture: route to the UI/UX Analyst before implementation.
-- Clear design with implementation work: route to the Visual Engineer with `implementation-handoff.md`.
+- Materially ambiguous user flow or information architecture: clarify the blocking decision before implementation; specialist review is optional and permission-gated.
+- Clear design with implementation work: implement directly, using `implementation-handoff.md` as a checklist when useful, not a required agent handoff.
 - Framework-specific implementation: load the framework, language, testing, and browser-testing skills.
 - Authentication, sensitive input, uploads, or external content: load the security skill.
 - A library API or CLI detail may have changed: retrieve current official documentation before prescribing it.
@@ -96,6 +101,6 @@ Every creative output should have:
 ## Related skills
 
 - `frontend-ui-engineering` for production frontend implementation.
-- `browser-testing-with-devtools` for runtime and viewport verification.
+- `testing` with `skills/testing/e2e-playwright.md` for available Playwright browser checks; `browser-testing-with-devtools` only for available Chrome DevTools-specific diagnostics. If neither browser route is usable, run permitted local tests and report live/visual verification as blocked; do not install a server implicitly.
 - `react`, `nextjs`, `typescript`, or another stack skill for framework conventions.
 - `testing` for deterministic behavior and accessibility tests.

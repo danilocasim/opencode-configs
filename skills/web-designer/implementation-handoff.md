@@ -3,7 +3,7 @@
 ## When to load
 
 - An approved design direction must become production frontend code.
-- A Visual Engineer needs concrete component, token, state, responsive, and verification requirements.
+- The current implementer needs concrete component, token, state, responsive, and verification requirements.
 
 ## When NOT to load
 
@@ -20,7 +20,10 @@
 - Specify every interaction state, responsive transformation, content stress case, and accessibility behavior.
 - Name browser viewports and checks that prove the implementation.
 
-## Required handoff
+## Implementation checklist
+
+Use this in the current session; a separate agent handoff is optional, not required.
+For a bounded approved design, record only changed decisions and relevant checks.
 
 1. Design thesis and non-goals.
 2. Annotated content and hierarchy.
@@ -36,9 +39,9 @@
 
 For each component record:
 
-| Need | Existing project component | shadcn/ui primitive | Decision | Customization |
-| --- | --- | --- | --- | --- |
-| Example: destructive confirmation | `components/ui/alert-dialog.tsx` | Alert Dialog | Reuse | Add `danger` action variant; preserve focus behavior |
+| Need                              | Existing project component       | shadcn/ui primitive | Decision | Customization                                        |
+| --------------------------------- | -------------------------------- | ------------------- | -------- | ---------------------------------------------------- |
+| Example: destructive confirmation | `components/ui/alert-dialog.tsx` | Alert Dialog        | Reuse    | Add `danger` action variant; preserve focus behavior |
 
 Before adding anything, inspect:
 

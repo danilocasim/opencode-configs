@@ -16,6 +16,7 @@ Exit codes:
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -42,13 +43,25 @@ def _read_text(path: Path) -> str:
 
 
 def lint_benchmark_file(path: Path) -> list[Issue]:
+    """Validate each scenario so later cases cannot borrow earlier markers."""
     issues: list[Issue] = []
     text = _read_text(path)
 
-    for marker in REQUIRED_MARKERS:
-        if marker not in text:
-            issues.append(Issue(path, f"missing required marker: {marker}"))
-            break
+    scenarios = re.split(r"^##[ \t]+(.+)$", text, flags=re.MULTILINE)
+    if len(scenarios) == 1:
+        return [Issue(path, "no benchmark scenarios (expected ## headings)")]
+
+    marker_pattern = "|".join(re.escape(marker) for marker in REQUIRED_MARKERS)
+    for title, body in zip(scenarios[1::2], scenarios[2::2]):
+        sections = re.split(rf"^({marker_pattern})[ \t]*$", body, flags=re.MULTILINE)
+        contents = dict(zip(sections[1::2], sections[2::2]))
+        for marker in REQUIRED_MARKERS:
+            if marker not in contents:
+                issues.append(
+                    Issue(path, f"{title}: missing required marker: {marker}")
+                )
+            elif not contents[marker].strip():
+                issues.append(Issue(path, f"{title}: empty section: {marker}"))
 
     return issues
 
@@ -63,9 +76,13 @@ def main(argv: list[str]) -> int:
     )
     args = parser.parse_args(argv)
 
-    benchmarks_dir = Path(args.benchmarks_dir).expanduser() if args.benchmarks_dir else (ROOT / "benchmarks")
+    benchmarks_dir = (
+        Path(args.benchmarks_dir).expanduser()
+        if args.benchmarks_dir
+        else (ROOT / "benchmarks")
+    )
 
-    if not benchmarks_dir.exists():
+    if not benchmarks_dir.is_dir():
         print(f"benchmarks dir not found: {benchmarks_dir}", file=sys.stderr)
         return 1
 

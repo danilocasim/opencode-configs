@@ -1,18 +1,18 @@
 ---
-description: Fix a bug or issue
+description: Apply and verify a focused repair when the issue is understood
 ---
 
-Fix the following issue:
+Apply a focused repair for the following understood issue:
 
 $ARGUMENTS
 
 Approach:
 
-1. Understand the bug (reproduce if possible)
-2. Identify the root cause (not just symptoms)
-3. Write a failing test that demonstrates the bug
-4. Fix the bug
-5. Verify the test passes
-6. Check for similar issues elsewhere
+1. Confirm the expected behavior and the affected scope.
+2. Inspect the relevant code and nearby tests before editing.
+3. Add or update the smallest regression test that proves the repair.
+4. Implement the minimal fix.
+5. Run the focused verification and report its exact outcome.
 
-Don't just patch - fix the root cause.
+If the root cause or scope is unclear, stop and use `/debug` instead of
+guessing.

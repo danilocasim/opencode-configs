@@ -7,7 +7,8 @@ Run the global skills linter and fix any issues.
 Run:
 
 ```bash
-python3 scripts/skills_lint.py
+python3 -B "$HOME/.config/opencode/scripts/skills_lint.py"
+python3 -B "$HOME/.config/opencode/scripts/skills_lint.py" --skills-dir "$HOME/.config/opencode/.agents/skills"
 ```
 
 If there are errors:

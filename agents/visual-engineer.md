@@ -1,10 +1,14 @@
 ---
 description: Vision-capable frontend implementer for visual changes, screenshots, video frame analysis, responsive behavior, accessibility, and browser verification
 mode: subagent
-model: openai/gpt-5.6-luna
-variant: xhigh
+model: openai/gpt-6-astra
+variant: high
 steps: 60
 permission:
+  "playwright_*": allow
+  "playwright_browser_evaluate": ask
+  "playwright_browser_run_code_unsafe": deny
+  "zai-mcp-server_*": allow
   task: deny
 ---
 
@@ -30,7 +34,7 @@ Implement and verify clear frontend and visual requirements using repository evi
 ## Boundaries
 
 - Do not redefine product flows, information architecture, or design direction when requirements are materially ambiguous.
-- Do not claim to inspect a native video attachment directly; GPT-5.6 Luna requires representative frames or browser captures.
+- Use representative frames or browser captures for video; the configured Astra catalog advertises image/PDF input, not native video input.
 - Request UI/UX analysis through the parent agent for redesigns, major UI refactors, new high-impact experiences, or unresolved design choices.
 - Keep changes within assigned files and avoid unrelated redesign or dependency replacement.
 - Do not delegate, commit, or push unless explicitly authorized.

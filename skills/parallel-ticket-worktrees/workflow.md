@@ -63,10 +63,10 @@
    Route normal tickets to Implementation Engineer; narrow mechanical packages
    to Bounded Worker; clear visual work to Visual Engineer; ambiguous or
    high-impact design to UI/UX Analyst; read-only mapping to Repository
-   Analyst; and high-risk work to Principal Engineer. Economy counterparts are
-   an Orchestrator cost/risk choice. Workers edit and run commands only in the
-   assigned worktree, and never integrate their own changes. After coding and
-   focused validation, each implementation worker performs a review/fix pass:
+   Analyst; and high-risk work to Principal Engineer. Workers edit and run
+   commands only in the assigned worktree, and never integrate their own
+   changes. After coding and focused validation, each implementation worker
+   performs a review/fix pass:
    classify findings as MUST, SHOULD, or NICE; fix every valid MUST and SHOULD;
    rerun affected checks; and stop after a clean result or three documented
    cycles.
@@ -89,12 +89,24 @@
    established integration strategy. If there is no clear strategy or the work
    conflicts, stop and ask rather than improvising.
 
-7. **Integrate safely and validate in base.** Integrate approved work in
-   dependency order, one unit at a time. Do not use force, overwrite unrelated
-   dirty base changes, or bypass required checks. Re-run the ticket's focused
-   validation commands from the base checkout after each integration, then run
-   broader repository checks when a shared boundary changed. Inspect the final
-   base diff and status, separating pre-existing changes from this workflow.
+7. **Hand off completed work for local testing.** On explicit user request,
+   first verify that the completed worktree is clean and its reviewed changes
+   are committed on its ticket branch. If it is uncommitted, obtain separate
+   explicit authorization to commit it. For a single ticket, remove the clean
+   completed worktree with `git worktree remove "<path>"` while retaining its
+   branch, then check that ticket branch out in the original checkout for manual
+   testing. This makes the existing ignored `.env`, private keys, and other
+   local configuration available without copying them into the worktree.
+
+   To test multiple completed tickets together, integrate their approved
+   branches in dependency order, one unit at a time into a named local target
+   branch checked out in the original checkout. Confirm the target branch and
+   its status first; if checkout, worktree removal, or integration would
+   overwrite unrelated dirty changes, stop rather than stashing or moving them.
+   Do not use force or bypass required checks. Re-run the ticket's focused
+   validation commands from the local branch after each handoff or integration,
+   then run broader repository checks when a shared boundary changed. Inspect
+   its final diff and status, separating pre-existing changes from this workflow.
 
 8. **Clean up only what is safe and authorized.** For each task-created
    worktree, inspect its status, diff, log, and commits unique to the base.
@@ -134,6 +146,11 @@ No commit or push. Clean temporary files and report actual files, command
 results, risks, and resource status. Do not integrate.
 ```
 
+```text
+/ticket-worktree integrate TICKET-123: remove its clean completed worktree,
+retain its branch, and check it out locally for manual testing
+```
+
 ## Anti-patterns
 
 - Assuming `main`, copying a checkout, or creating a worktree before checking
@@ -143,6 +160,10 @@ results, risks, and resource status. Do not integrate.
 - Launching parallel workers with overlapping files, missing validation
   commands, or a vague "implement ticket" mission.
 - Letting a worker merge, cherry-pick, delete branches, or remove a worktree.
+- Deleting a completed ticket branch when handing off its worktree for local
+  testing; remove only the clean worktree so the branch can be checked out.
+- Copying `.env`, private keys, or other local configuration into a ticket
+  worktree solely to run manual tests.
 - Using `--force`, `git clean`, broad prune, reset, or branch deletion to make
   cleanup appear complete.
 - Removing a worktree before its uncommitted work and unique commits have been
@@ -161,7 +182,10 @@ results, risks, and resource status. Do not integrate.
       reviewed by the Orchestrator.
 - [ ] Explicit intent covers every commit, integration, worktree removal, and
       branch cleanup performed.
-- [ ] Base validation ran after approved integration, and unrelated dirty work
-      remains untouched.
+- [ ] The clean completed worktree was removed without deleting its ticket
+      branch before local handoff, or approved branches were integrated into a
+      named local target branch for combined testing.
+- [ ] Focused validation and any manual testing ran from the local branch, and
+      unrelated dirty work remains untouched.
 - [ ] Cleanup ledger identifies every removed or retained path, branch, and
       temporary resource.

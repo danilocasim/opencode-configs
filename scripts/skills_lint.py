@@ -6,6 +6,7 @@ This is intentionally dependency-free (stdlib only) so it can run anywhere.
 
 Default behavior:
 - Lint skills under ~/.config/opencode/skills (based on this script location).
+- Discover nested SKILL.md files; namespace directories need no router of their own.
 
 Exit codes:
 - 0: no issues
@@ -18,6 +19,7 @@ import argparse
 import re
 import sys
 from dataclasses import dataclass
+from glob import has_magic
 from pathlib import Path
 
 
@@ -179,6 +181,8 @@ def _extract_local_md_references(text: str) -> set[str]:
     different skill, so it is not a filesystem reference by itself. Markdown
     link destinations are explicit targets; outside those links, only root
     ``skills/...`` and relative ``./`` or ``../`` paths are local references.
+    Generated Markdown-link examples in code spans and artifact globs are not
+    concrete dependencies; plain code paths remain validated.
     """
 
     refs: set[str] = set()
@@ -194,10 +198,19 @@ def _extract_local_md_references(text: str) -> set[str]:
         ):
             refs.add(ref)
 
+    # Inline Markdown links quoted as code are generated examples, not targets.
+    # Keep plain code paths: `./required.md` still declares a real dependency.
+    reference_text = MD_INLINE_CODE_SPAN_RE.sub(
+        lambda match: (
+            "" if MD_LINK_DESTINATION_RE.search(match.group()) else match.group()
+        ),
+        reference_text,
+    )
     for match in EXPLICIT_LOCAL_MD_REF_RE.finditer(reference_text):
         refs.add(match.group("ref"))
 
-    return refs
+    # Artifact patterns (e.g. learning-records/*.md) need not exist yet.
+    return {ref for ref in refs if not has_magic(ref)}
 
 
 def lint_skill_dir(skill_dir: Path) -> list[Issue]:
@@ -306,12 +319,22 @@ def main(argv: list[str]) -> int:
         Path(args.skills_dir).expanduser() if args.skills_dir else (ROOT / "skills")
     )
 
-    if not skills_dir.exists():
+    if not skills_dir.is_dir():
         print(f"skills dir not found: {skills_dir}", file=sys.stderr)
         return 1
 
     issues: list[Issue] = []
 
+    skill_dirs = {
+        path.parent
+        for path in skills_dir.rglob("SKILL.md")
+        if not any(part.startswith(".") for part in path.relative_to(skills_dir).parts)
+    }
+    for skill_dir in sorted(skill_dirs):
+        issues.extend(lint_skill_dir(skill_dir))
+
+    # Namespace containers are valid; retain the missing-SKILL check for
+    # immediate directories that contain no discoverable skill at all.
     for child in sorted(skills_dir.iterdir()):
         if not child.is_dir():
             continue
@@ -319,7 +342,8 @@ def main(argv: list[str]) -> int:
         if child.name.startswith("."):
             continue
 
-        issues.extend(lint_skill_dir(child))
+        if not any(path == child or child in path.parents for path in skill_dirs):
+            issues.extend(lint_skill_dir(child))
 
     if not issues:
         print("skills_lint: OK")

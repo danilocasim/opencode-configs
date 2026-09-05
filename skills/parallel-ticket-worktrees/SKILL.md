@@ -22,8 +22,8 @@ disjoint ticket work without disturbing the user's base checkout.
 
 ## Router
 
-| Need | Load |
-| --- | --- |
+| Need                                                               | Load          |
+| ------------------------------------------------------------------ | ------------- |
 | Inspect, create, delegate, integrate, or clean up ticket worktrees | `workflow.md` |
 
 ## Orchestrator integration
@@ -33,28 +33,27 @@ worktree ledger, worker routing, review, approved integration, validation, and
 cleanup. Workers never integrate their own changes or operate outside their
 assigned worktree.
 
-| Work type | Default route |
-| --- | --- |
-| Read-only repository map or dependency discovery | Repository Analyst |
-| Normal ticket implementation | Implementation Engineer |
-| Mechanical, isolated, objectively checked package | Bounded Worker |
-| Clear visual implementation or browser verification | Visual Engineer |
-| Ambiguous or high-impact product/design direction | UI/UX Analyst |
-| High-risk, security-sensitive, hard-to-reverse, or foundational work | Principal Engineer |
+| Work type                                                            | Default route           |
+| -------------------------------------------------------------------- | ----------------------- |
+| Read-only repository map or dependency discovery                     | Repository Analyst      |
+| Normal ticket implementation                                         | Implementation Engineer |
+| Mechanical, isolated, objectively checked package                    | Bounded Worker          |
+| Clear visual implementation or browser verification                  | Visual Engineer         |
+| Ambiguous or high-impact product/design direction                    | UI/UX Analyst           |
+| High-risk, security-sensitive, hard-to-reverse, or foundational work | Principal Engineer      |
 
-The Orchestrator may select economy counterparts under its normal cost/risk
-policy. Keep parallel ownership disjoint; dependency or overlap means sequence
-the work instead.
+Keep parallel ownership disjoint; dependency or overlap means sequence the work
+instead.
 
 ## Typical modes
 
-| Mode | Result |
-| --- | --- |
-| `inspect` / `plan` | Read-only preflight, ticket decomposition, and ownership plan. |
-| `setup-only` | Create approved, collision-free worktrees and report their paths. |
-| `implement` | Set up as needed, delegate isolated implementation, and review evidence. |
-| `integrate` | Preflight and integrate named completed work only with explicit intent. |
-| `cleanup` | Inspect and remove only explicitly approved, safe task-owned resources. |
+| Mode               | Result                                                                                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `inspect` / `plan` | Read-only preflight, ticket decomposition, and ownership plan.                                                                                        |
+| `setup-only`       | Create approved, collision-free worktrees and report their paths.                                                                                     |
+| `implement`        | Set up as needed, delegate isolated implementation, and review evidence.                                                                              |
+| `integrate`        | Hand off a completed ticket branch to the original checkout or integrate multiple branches into a named local test branch, only with explicit intent. |
+| `cleanup`          | Inspect and remove only explicitly approved, safe task-owned resources.                                                                               |
 
 Invocation authorizes the requested inspection, setup, and implementation work.
 It does not implicitly authorize commits, merging/integration, deletion/removal,
@@ -82,6 +81,11 @@ or branch cleanup.
   branch command.
 - Inspect status, diff, log, and unique commits before integration or cleanup.
 - Integrate in the repository's established dependency order and validate again
-  from the base checkout.
+  from the named local target branch in the original checkout.
+- For manual testing, retain the original checkout's ignored local environment
+  files; do not copy private configuration into ticket worktrees.
+- A completed worktree may be removed only after its commits are reviewed and
+  preserved on its branch; remove the worktree, not the branch, before checking
+  that branch out in the original checkout.
 - Retain and precisely report any resource that is unsafe to integrate or
   remove.

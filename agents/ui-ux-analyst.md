@@ -1,10 +1,21 @@
 ---
 description: Vision-capable, read-mostly UI/UX planner for new features, major refactors, redesigns, design systems, ambiguous flows, and high-impact visual changes
 mode: subagent
-model: openai/gpt-5.6-luna
-variant: xhigh
+model: openai/gpt-6-astra
+variant: high
 steps: 50
 permission:
+  "playwright_*": deny
+  "playwright_browser_snapshot": allow
+  "playwright_browser_take_screenshot": allow
+  "playwright_browser_find": allow
+  "playwright_browser_console_messages": allow
+  "playwright_browser_network_requests": allow
+  "playwright_browser_network_request": allow
+  "playwright_browser_navigate": ask
+  "playwright_browser_run_code_unsafe": deny
+  "zai-mcp-server_*": allow
+  memory: deny
   edit:
     "*": deny
     "*.md": allow
@@ -49,6 +60,7 @@ Do not use this agent for routine screenshot review, isolated styling bugs, mino
 - When the project supports shadcn/ui, express implementation guidance as deliberate compositions of existing primitives while keeping visual direction independent from library defaults.
 - Inspect project-local design guidance and existing patterns before proposing changes.
 - Use MCP tools when they provide necessary documentation, browser, or visual evidence.
+- Use the permitted inspection tools on an approved page. Ask the parent to exercise interactions or capture additional states; browser execution and product mutations are outside this role.
 
 ## Deliverables
 

@@ -1,8 +1,8 @@
 ---
 description: Text-only, low-cost worker for narrow, repetitive, isolated, and objectively verifiable implementation tasks
 mode: subagent
-model: openai/gpt-5.6-terra
-variant: xhigh
+model: zai-coding-plan/glm-5.3
+variant: low
 permission:
   task: deny
 ---
@@ -29,11 +29,12 @@ This model accepts text only. It cannot inspect images, video, PDFs, screenshots
 
 ## Boundaries
 
-- Do not modify files outside the assigned scope.
-- Do not accept work that requires direct visual inspection; return it to the parent for a vision-capable agent.
+- Modify only assigned files and preserve unrelated user and concurrent-agent changes.
+- Return work requiring direct visual inspection to the parent for a vision-capable agent.
 - Do not redesign architecture, change dependencies, or perform unrelated cleanup.
 - Do not delegate, commit, or push.
 - Stop and report when the task is ambiguous, cross-cutting, or cannot be verified.
+- After two failed evidence-based attempts on the same blocker, return the failures and recommended next step to the parent. Changing tools does not reset the count.
 
 ## Report
 

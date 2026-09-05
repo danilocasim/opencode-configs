@@ -78,6 +78,10 @@
   //
   // The provider name must match a connected provider in opencode (check with: opencode providers list)
   "opencodeProvider": "openai",
+  // In opencode-mem 2.23.0, inherit selects the prompt's model or a recent
+  // OpenCode model. It can therefore run extraction on Astra; it is not a
+  // small-model setting. Keep this baseline until isolated A/B evidence exists
+  // (see benchmarks/README.md); never replay real credentials into benchmarks.
   "opencodeModel": "inherit",
 
   // ============================================

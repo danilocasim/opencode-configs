@@ -1,6 +1,6 @@
 ---
 name: git-workflow-and-versioning
-description: Structures git workflow practices. Use when making any code change. Use when committing, branching, resolving conflicts, or when you need to organize work across multiple parallel streams. Use when cutting a release, choosing a semantic version bump, tagging, or writing a changelog.
+description: Git delivery and versioning guidance for explicit commit, branch, conflict-resolution, release, or changelog tasks. Routine edits do not require this workflow or authorize Git mutations.
 ---
 
 # Git Workflow and Versioning
@@ -11,7 +11,11 @@ Git is your safety net. Treat commits as save points, branches as sandboxes, and
 
 ## When to Use
 
-Always. Every code change flows through git.
+Use for the Git/versioning operation the user actually requested. Preserve the
+existing branch/worktree and unrelated changes. Commit, push, PR operations,
+integration, and cleanup require explicit authorization for the action and target;
+the examples below are not permission. The repository's established workflow
+takes precedence over the generic branching recommendations here.
 
 ## Core Principles
 
@@ -33,7 +37,8 @@ This is the recommended default. Teams using gitflow or long-lived branches can 
 
 ### 1. Commit Early, Commit Often
 
-Each successful increment gets its own commit. Don't accumulate large uncommitted changes.
+When commits are explicitly authorized, keep them small and independently verified.
+Otherwise retain verified changes uncommitted and report them; checkpoints do not require commits.
 
 ```
 Work pattern:
@@ -64,7 +69,7 @@ x1y2z3a Add task feature, fix sidebar, update deps, refactor utils
 
 ### 3. Descriptive Messages
 
-Commit messages explain the *why*, not just the *what*:
+Commit messages explain the _why_, not just the _what_:
 
 ```
 # Good: Explains intent
@@ -79,6 +84,7 @@ update auth.ts
 ```
 
 **Format:**
+
 ```
 <type>: <short description>
 
@@ -86,6 +92,7 @@ update auth.ts
 ```
 
 **Types:**
+
 - `feat` — New feature
 - `fix` — Bug fix
 - `refactor` — Code change that neither fixes a bug nor adds a feature
@@ -146,7 +153,9 @@ refactor/<short-description>  → refactor/auth-module
 
 ## Working with Worktrees
 
-For parallel AI agent work, use git worktrees to run multiple branches simultaneously:
+For explicitly requested parallel work, follow `parallel-ticket-worktrees` as the
+lifecycle authority. The following commands illustrate layout, not authorization
+to create, integrate, or remove worktrees:
 
 ```bash
 # Create a worktree for a feature branch
@@ -160,14 +169,16 @@ ls ../
   project-feature-a/    ← task-creation branch
   project-feature-b/    ← user-settings branch
 
-# When done, merge and clean up
+# Only after authorized integration and proof that no work will be lost
 git worktree remove ../project-feature-a
 ```
 
 Benefits:
+
 - Multiple agents can work on different features simultaneously
 - No branch switching needed (each directory has its own branch)
-- If one experiment fails, delete the worktree — nothing is lost
+- Retain failed experiments containing dirty files or unique commits until their
+  disposition is explicitly approved; removal is not automatically lossless
 - Changes are isolated until explicitly merged
 
 ## The Save Point Pattern
@@ -176,8 +187,8 @@ Benefits:
 Agent starts work
     │
     ├── Makes a change
-    │   ├── Test passes? → Commit → Continue
-    │   └── Test fails? → Revert to last commit → Investigate
+    │   ├── Test passes? → Record evidence → Commit only if authorized → Continue
+    │   └── Test fails? → Preserve evidence and unrelated work → Investigate
     │
     ├── Makes another change
     │   ├── Test passes? → Commit → Continue
@@ -269,7 +280,7 @@ git log --grep="validation" --oneline
 
 ## Release & Versioning
 
-Commits are how *you* track change; a **version** is how your *consumers* track it. The moment anything else depends on your code — another team, a published package, a deployed client — "latest on main" stops being a sufficient answer to "what am I running, and is it safe to upgrade?" A version number and a changelog are the contract that answers it.
+Commits are how _you_ track change; a **version** is how your _consumers_ track it. The moment anything else depends on your code — another team, a published package, a deployed client — "latest on main" stops being a sufficient answer to "what am I running, and is it safe to upgrade?" A version number and a changelog are the contract that answers it.
 
 ### Semantic Versioning
 
@@ -300,11 +311,17 @@ A changelog is not `git log`. It's the curated, consumer-facing answer to "what 
 
 ```markdown
 ## [1.4.0] - 2025-06-12
+
 ### Added
+
 - Bulk task import via CSV
+
 ### Fixed
+
 - Timezone drift in recurring task due dates
+
 ### Deprecated
+
 - `GET /v1/tasks/all` — use the paginated `GET /v1/tasks` (removal in 2.0)
 ```
 
@@ -312,17 +329,17 @@ Write the entry in the same change that makes the change, while the impact is fr
 
 ## Common Rationalizations
 
-| Rationalization | Reality |
-|---|---|
-| "I'll commit when the feature is done" | One giant commit is impossible to review, debug, or revert. Commit each slice. |
-| "The message doesn't matter" | Messages are documentation. Future you (and future agents) will need to understand what changed and why. |
-| "I'll squash it all later" | Squashing destroys the development narrative. Prefer clean incremental commits from the start. |
-| "Branches add overhead" | Short-lived branches are free and prevent conflicting work from colliding. Long-lived branches are the problem — merge within 1-3 days. |
-| "I'll split this change later" | Large changes are harder to review, riskier to deploy, and harder to revert. Split before submitting, not after. |
-| "I don't need a .gitignore" | Until `.env` with production secrets gets committed. Set it up immediately. |
-| "It's just a small fix, bump the patch" | Check what consumers can observe. A behavior change they relied on is a major, whatever the diff size. |
-| "The changelog is just the commit log" | Commits are for you; the changelog is for consumers, curated by impact. Generating one from raw commits buries what matters. |
-| "We'll write the changelog at release time" | By then the impact is reconstructed from memory and half of it is missing. Write the entry with the change. |
+| Rationalization                             | Reality                                                                                                                                 |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| "I'll commit when the feature is done"      | Keep verified increments reviewable; commit only within the authorized delivery scope.                                                  |
+| "The message doesn't matter"                | Messages are documentation. Future you (and future agents) will need to understand what changed and why.                                |
+| "I'll squash it all later"                  | Squashing destroys the development narrative. Prefer clean incremental commits from the start.                                          |
+| "Branches add overhead"                     | Short-lived branches are free and prevent conflicting work from colliding. Long-lived branches are the problem — merge within 1-3 days. |
+| "I'll split this change later"              | Large changes are harder to review, riskier to deploy, and harder to revert. Split before submitting, not after.                        |
+| "I don't need a .gitignore"                 | Until `.env` with production secrets gets committed. Set it up immediately.                                                             |
+| "It's just a small fix, bump the patch"     | Check what consumers can observe. A behavior change they relied on is a major, whatever the diff size.                                  |
+| "The changelog is just the commit log"      | Commits are for you; the changelog is for consumers, curated by impact. Generating one from raw commits buries what matters.            |
+| "We'll write the changelog at release time" | By then the impact is reconstructed from memory and half of it is missing. Write the entry with the change.                             |
 
 ## Red Flags
 

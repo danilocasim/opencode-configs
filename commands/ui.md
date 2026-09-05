@@ -1,6 +1,5 @@
 ---
 description: Design and implement UI components or pages through the shared UI workflow
-agent: orchestrator
 ---
 
 Load the `web-designer` skill first and inspect the project's existing design
@@ -12,10 +11,13 @@ Request:
 $ARGUMENTS
 ```
 
-- For clear implementation requirements, route to the Visual Engineer.
+- Work directly in the selected session, including economy sessions, for clear
+  implementation requirements; no specialist handoff is required.
 - For a new high-impact experience, major redesign, or unresolved product flow,
-  route to the UI/UX Analyst first, then hand the approved direction to the
-  Visual Engineer.
+  clarify consequential decisions before implementation. A specialist review is
+  optional only with parent approval and permitted task access/depth.
 - Reuse project-owned shadcn/ui primitives when compatible; do not overwrite
   customized components blindly or present default shadcn styling as design.
 - Verify responsive behavior and accessibility in the browser when code changes.
+- Use available Playwright tools via `testing` guidance, or DevTools only when
+  available and appropriate. Report unavailable browser verification honestly.

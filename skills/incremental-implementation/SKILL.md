@@ -1,6 +1,6 @@
 ---
 name: incremental-implementation
-description: Delivers changes incrementally. Use when implementing any feature or change that touches more than one file. Use when you're about to write a large amount of code at once, or when a task feels too big to land in one step.
+description: Slice large implementations into independently verifiable increments. Use when a change is too large for one safe test-and-verify cycle, not merely because it touches multiple files.
 ---
 
 # Incremental Implementation
@@ -11,12 +11,12 @@ Build in thin vertical slices — implement one piece, test it, verify it, then 
 
 ## When to Use
 
-- Implementing any multi-file change
+- Implementing a change that needs multiple verification checkpoints
 - Building a new feature from a task breakdown
 - Refactoring existing code
 - Any time you're tempted to write more than ~100 lines before testing
 
-**When NOT to use:** Single-file, single-function changes where the scope is already minimal.
+**When NOT to use:** Clear bounded changes with an obvious verification path, including small multi-file changes.
 
 ## The Increment Cycle
 
@@ -25,7 +25,7 @@ Build in thin vertical slices — implement one piece, test it, verify it, then 
 │                                      │
 │   Implement ──→ Test ──→ Verify ──┐  │
 │       ▲                           │  │
-│       └───── Commit ◄─────────────┘  │
+│       └── Checkpoint ◄────────────┘  │
 │              │                       │
 │              ▼                       │
 │          Next slice                  │
@@ -38,7 +38,7 @@ For each slice:
 1. **Implement** the smallest complete piece of functionality
 2. **Test** — run the test suite (or write a test if none exists)
 3. **Verify** — confirm the slice works as expected (tests pass, build succeeds, manual check)
-4. **Commit** -- save your progress with a descriptive message (see `git-workflow-and-versioning` for atomic commit guidance)
+4. **Checkpoint** — record the verified slice. Commit only when explicitly authorized by the user; implementation requests do not authorize commits, pushes, PRs, or integration. Preserve unrelated dirty work.
 5. **Move to the next slice** — carry forward, don't restart
 
 ## Slicing Strategies
@@ -93,6 +93,7 @@ If Slice 1 fails, you discover it before investing in Slices 2 and 3.
 Before writing any code, ask: "What is the simplest thing that could work?"
 
 After writing code, review it against these checks:
+
 - Can this be done in fewer lines?
 - Are these abstractions earning their complexity?
 - Would a staff engineer look at this and say "why didn't you just..."?
@@ -117,6 +118,7 @@ Three similar lines of code is better than a premature abstraction. Implement th
 Touch only what the task requires.
 
 Do NOT:
+
 - "Clean up" code adjacent to your change
 - Refactor imports in files you're not modifying
 - Remove comments you don't fully understand
@@ -136,9 +138,9 @@ NOTICED BUT NOT TOUCHING:
 
 Each increment changes one logical thing. Don't mix concerns:
 
-**Bad:** One commit that adds a new component, refactors an existing one, and updates the build config.
+**Bad:** One increment that adds a new component, refactors an existing one, and updates the build config.
 
-**Good:** Three separate commits — one for each change.
+**Good:** Three separately verified increments — one for each change. If commits are authorized, keep them atomic too.
 
 ### Rule 2: Keep It Compilable
 
@@ -150,7 +152,7 @@ If a feature isn't ready for users but you need to merge increments:
 
 ```typescript
 // Feature flag for work-in-progress
-const ENABLE_TASK_SHARING = process.env.FEATURE_TASK_SHARING === 'true';
+const ENABLE_TASK_SHARING = process.env.FEATURE_TASK_SHARING === "true";
 
 if (ENABLE_TASK_SHARING) {
   // New sharing UI
@@ -206,19 +208,19 @@ After each increment, verify:
 - [ ] Type checking passes (`npx tsc --noEmit`)
 - [ ] Linting passes (`npm run lint`)
 - [ ] The new functionality works as expected
-- [ ] The change is committed with a descriptive message
+- [ ] Verification evidence is recorded; any commit was explicitly authorized
 
 **Note:** Run each verification command after a change that could affect it. After a successful run, don't repeat the same command unless the code has changed since — re-running on unchanged code adds no information.
 
 ## Common Rationalizations
 
-| Rationalization | Reality |
-|---|---|
-| "I'll test it all at the end" | Bugs compound. A bug in Slice 1 makes Slices 2-5 wrong. Test each slice. |
-| "It's faster to do it all at once" | It *feels* faster until something breaks and you can't find which of 500 changed lines caused it. |
-| "These changes are too small to commit separately" | Small commits are free. Large commits hide bugs and make rollbacks painful. |
-| "I'll add the feature flag later" | If the feature isn't complete, it shouldn't be user-visible. Add the flag now. |
-| "This refactor is small enough to include" | Refactors mixed with features make both harder to review and debug. Separate them. |
+| Rationalization                                      | Reality                                                                                                                                                     |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "I'll test it all at the end"                        | Bugs compound. A bug in Slice 1 makes Slices 2-5 wrong. Test each slice.                                                                                    |
+| "It's faster to do it all at once"                   | It _feels_ faster until something breaks and you can't find which of 500 changed lines caused it.                                                           |
+| "A checkpoint requires a commit"                     | Verification is the checkpoint. Git delivery requires explicit authorization.                                                                               |
+| "I'll add the feature flag later"                    | If the feature isn't complete, it shouldn't be user-visible. Add the flag now.                                                                              |
+| "This refactor is small enough to include"           | Refactors mixed with features make both harder to review and debug. Separate them.                                                                          |
 | "Let me run the build command again just to be sure" | After a successful run, repeating the same command adds nothing unless the code has changed since. Run it again after subsequent edits, not as reassurance. |
 
 ## Red Flags
@@ -228,7 +230,7 @@ After each increment, verify:
 - "Let me just quickly add this too" scope expansion
 - Skipping the test/verify step to move faster
 - Build or tests broken between increments
-- Large uncommitted changes accumulating
+- Large unverified changes accumulating
 - Building abstractions before the third use case demands it
 - Touching files outside the task scope "while I'm here"
 - Creating new utility files for one-time operations
@@ -238,12 +240,12 @@ After each increment, verify:
 
 After completing all increments for a task:
 
-- [ ] Each increment was individually tested and committed
+- [ ] Each increment was individually tested and its result recorded
 - [ ] The full test suite passes
 - [ ] The build is clean
 - [ ] The feature works end-to-end as specified
-- [ ] No uncommitted changes remain
+- [ ] Task-owned uncommitted changes and unrelated existing dirty work are accurately reported
 
 ## See Also
 
-Per-increment verification is the local check. Before declaring a task done, apply the project-wide Definition of Done as the final gate, the standing bar every increment clears regardless of the task. See `references/definition-of-done.md`.
+Per-increment verification is the local check. Completion is measured against the user's acceptance criteria and the repository's actual completion guidance. Report failed, blocked, or deferred checks explicitly; a clean Git worktree is not a completion requirement.

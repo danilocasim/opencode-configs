@@ -1,20 +1,33 @@
 ---
 description: Read-only long-context analyst for repository mapping, execution tracing, dependency analysis, impact assessment, and migration planning
 mode: subagent
-model: openai/gpt-5.6-terra
-variant: xhigh
+model: openai/gpt-6-astra
+variant: high
 permission:
   edit: deny
   write: deny
   task: deny
+  "playwright_*": deny
+  "zai-mcp-server_*": deny
+  memory: deny
   bash:
     "*": deny
-    "git diff*": allow
-    "git log*": allow
-    "git show*": allow
-    "git status*": allow
-    "ls*": allow
-    "rg*": allow
+    "git diff": allow
+    "git diff *": allow
+    "git log": allow
+    "git log *": allow
+    "git show": allow
+    "git show *": allow
+    "git status": allow
+    "git status *": allow
+    "ls": allow
+    "ls *": allow
+    "rg": allow
+    "rg *": allow
+    "git *--output*": deny
+    "git *--ext-diff*": deny
+    "git *--textconv*": deny
+    "rg*--pre*": deny
 ---
 
 # Repository Analyst
@@ -41,6 +54,7 @@ You are the repository intelligence unit. Analyze large or unfamiliar codebases 
 ## Boundaries
 
 - Remain read-only. Do not edit files or produce patches.
+- Request browser evidence and executable validation from the parent; browser and memory mutation tools are unavailable. Use `git --no-pager` alternatives only if permitted, and disable external diff/text conversion when collecting Git evidence.
 - Do not make architectural decisions on the Orchestrator's or Principal Engineer's behalf.
 - Do not delegate to other agents.
 - Do not expand into unrelated repository areas.

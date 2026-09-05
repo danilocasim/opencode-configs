@@ -1,6 +1,6 @@
 # OpenCode Config + Skill Library
 
-> **Production-grade LLM coding configuration with router-first skill architecture**
+> **Astra-first coding workflow with bounded delegation and task-driven skills**
 
 This repository contains a comprehensive OpenCode configuration system designed to make AI coding assistants predictable, consistent, and production-quality across projects.
 
@@ -24,16 +24,16 @@ This repository contains a comprehensive OpenCode configuration system designed 
 
 This repository provides a complete OpenCode configuration system with:
 
-- **75+ specialized skills** covering languages, frameworks, design, and cross-cutting concerns
+- **Specialized skills** covering languages, frameworks, design, and cross-cutting concerns
 - **Router-first architecture** for precise, minimal context loading
-- **Premium and economy coding tiers with shared specialist workers**
+- **Focused coding agents with shared specialist workers**
 - **25+ custom commands** for common workflows
 - **Project-local skill support** for team conventions
 - **Guardrails and linting** to prevent skill drift
 
 ### Core Philosophy
 
-**Skills are the primary mechanism for consistent output.** Instead of relying on the model's training data, we explicitly load focused, versioned guidance that constrains behavior.
+**The active agent owns execution; skills supply focused methods.** Load guidance for a real uncertainty or risk, not a mandatory lifecycle. User authorization and agent permissions govern Git delivery, external actions, and delegation regardless of the selected skill.
 
 The system follows these principles:
 
@@ -46,7 +46,7 @@ The system follows these principles:
 
 > **IMPORTANT: Prefer retrieval-led reasoning over pre-training-led reasoning for any tasks.**
 >
-> **Before writing code, first explore the project structure, then invoke the skills, rules and standards for documentation.**
+> **Before writing code, inspect the relevant source and nearby tests, then load only the guidance needed for the task.**
 
 This principle, inspired by [Vercel's research](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals), is what makes this entire system work. Instead of letting the AI rely on its training data (which may be outdated, inconsistent, or wrong), we force it to **retrieve** specific, current, project-relevant guidance before acting.
 
@@ -54,7 +54,7 @@ This principle, inspired by [Vercel's research](https://vercel.com/blog/agents-m
 
 - **Consistency** - Every task follows the same conventions, regardless of which AI model is used
 - **Accuracy** - Skills contain up-to-date patterns (2024-2026) rather than potentially stale training data
-- **Predictability** - Same input produces same output because constraints are explicit
+- **Predictability** - Explicit scope and verification make the process testable; model outputs can still vary
 - **Team alignment** - Project-local skills encode team conventions that everyone follows
 
 This is the glue that binds everything together: the router-first architecture, the skill loading protocol, the guardrails, and the quality checks all serve this single principle—**retrieve before you reason**.
@@ -87,33 +87,40 @@ Agents define the model, execution boundary, permissions, and cost profile. Skil
 
 ### Coding Army
 
-#### Premium tier
+#### Core coding agents
 
-| Agent                       | Model                  | Reasoning | Responsibility                                                |
-| --------------------------- | ---------------------- | --------- | ------------------------------------------------------------- |
-| **orchestrator**            | `openai/gpt-5.6-sol`   | `xhigh`   | Primary commander, integrator, and final validator            |
-| **principal-engineer**      | `openai/gpt-5.6-sol`   | `xhigh`   | Architecture, high-risk work, deep debugging, and rescue work |
-| **implementation-engineer** | `openai/gpt-5.6-terra` | `xhigh`   | Default implementation, bug fixing, testing, and integration  |
-| **bounded-worker**          | `openai/gpt-5.6-luna`  | `xhigh`   | Narrow, repetitive, isolated, and testable work               |
-| **repository-analyst**      | `openai/gpt-5.6-terra` | `xhigh`   | Read-only repository mapping and migration planning           |
-
-#### Economy tier
-
-| Agent                               | Model                  | Reasoning | Responsibility                               |
-| ----------------------------------- | ---------------------- | --------- | -------------------------------------------- |
-| **economy-orchestrator**            | `openai/gpt-5.6-terra` | `xhigh`   | Text-only, cost-controlled primary           |
-| **economy-implementation-engineer** | `openai/gpt-5.6-terra` | `xhigh`   | Text-only, cost-efficient implementation     |
-| **economy-bounded-worker**          | `openai/gpt-5.6-terra` | `xhigh`   | Text-only mechanical and tightly scoped work |
-| **economy-repository-analyst**      | `openai/gpt-5.6-terra` | `xhigh`   | Text-only read-only repository analysis      |
-
-The Economy Orchestrator and its economy workers are text-only and must not receive visual-dependent missions. Route those missions to the Visual Engineer or UI/UX Analyst.
+| Agent                       | Model                 | Reasoning | Responsibility                                                |
+| --------------------------- | --------------------- | --------- | ------------------------------------------------------------- |
+| **orchestrator**            | `openai/gpt-6-astra`  | `high`    | Primary engineer; direct execution, integration, verification |
+| **principal-engineer**      | `openai/gpt-6-astra`  | `xhigh`   | Architecture, high-risk work, deep debugging, and rescue work |
+| **implementation-engineer** | `openai/gpt-6-astra`  | `high`    | Scoped independent implementation packages                    |
+| **bounded-worker**          | `openai/gpt-5.6-luna` | `max`     | Narrow, repetitive, isolated, and testable work               |
+| **repository-analyst**      | `openai/gpt-6-astra`  | `high`    | Read-only repository mapping and migration planning           |
 
 #### Shared UI specialists
 
-| Agent               | Model                 | Reasoning | Responsibility                                                                    |
-| ------------------- | --------------------- | --------- | --------------------------------------------------------------------------------- |
-| **visual-engineer** | `openai/gpt-5.6-luna` | `xhigh`   | UI implementation, image/PDF inspection, video frame analysis, browser validation |
-| **ui-ux-analyst**   | `openai/gpt-5.6-luna` | `xhigh`   | High-impact image/video UI/UX analysis and Markdown planning; no product code     |
+| Agent               | Model                | Reasoning | Responsibility                                                              |
+| ------------------- | -------------------- | --------- | --------------------------------------------------------------------------- |
+| **visual-engineer** | `openai/gpt-6-astra` | `high`    | UI implementation, image/PDF inspection, video frames, browser validation   |
+| **ui-ux-analyst**   | `openai/gpt-6-astra` | `high`    | Major/ambiguous experience decisions and Markdown planning; no product code |
+
+#### Economy entry point
+
+| Agent                               | Model                     | Reasoning | Responsibility                                      |
+| ----------------------------------- | ------------------------- | --------- | --------------------------------------------------- |
+| **economy-orchestrator**            | `openai/gpt-5.6-luna`     | `max`     | Cost-controlled primary with direct-first execution |
+| **economy-implementation-engineer** | `zai-coding-plan/glm-5.3` | `high`    | Scoped text-only implementation                     |
+| **economy-bounded-worker**          | `zai-coding-plan/glm-5.3` | `low`     | Objectively verifiable text-only mechanical work    |
+| **economy-repository-analyst**      | `zai-coding-plan/glm-5.3` | `high`    | Read-only text analysis                             |
+
+The Astra primary can also call `economy-bounded-worker` when cost is a priority.
+The economy primary can call the principal and UI specialists. GLM workers need
+text evidence for visual-dependent work; Astra and Luna accept images/PDFs, not
+native video. Use representative video frames or an appropriate vision tool.
+
+These are baseline settings, not benchmark-proven optima. Keep `high` for normal
+Astra work and `xhigh` for the principal. Lower Luna worker effort and Astra
+analyst effort are controlled experiments in [benchmarks/README.md](benchmarks/README.md).
 
 The Orchestrator may recommend skills in a mission when a particular constraint matters. Each worker still inspects the task and repository instructions and makes the final skill selection.
 
@@ -121,28 +128,19 @@ The Orchestrator may recommend skills in a mission when a particular constraint 
 
 ```mermaid
 flowchart TD
-    A[User selects primary] --> T[Premium Orchestrator]
-    A --> E[Economy Orchestrator]
-    T --> P[Premium workers]
-    T --> C[Economy workers]
-    E --> C
-    T --> S[Shared specialists]
-    E --> S
-    P --> V[Primary integrates and validates]
-    C --> V
-    S --> V
+    A[User selects primary] --> T[Orchestrator]
+    T --> D{Independent package or specialist benefit?}
+    D -->|No| I[Primary implements directly]
+    D -->|Yes| P[One bounded worker by default]
+    I --> V[Primary verifies outcome]
+    P --> V
 ```
 
-The premium Orchestrator can choose either worker tier. The Economy Orchestrator uses economy workers for routine work but may invoke the Principal Engineer, Visual Engineer, or UI/UX Analyst when their narrow escalation trigger applies. The premium Implementation Engineer may launch either Bounded Worker; the Economy Implementation Engineer may launch only the Economy Bounded Worker. Every other coding worker is denied subagent access, and depth 2 prevents delegation below a Bounded Worker.
-
-To make the economy tier the default only in a high-consumption project, add this project-local configuration:
-
-```json
-{
-  "$schema": "https://opencode.ai/config.json",
-  "default_agent": "economy-orchestrator"
-}
-```
+The Orchestrator performs ordinary work directly. Delegation needs a concrete
+benefit, disjoint ownership, acceptance criteria, and a verification command.
+Workers cannot delegate; `subagent_depth: 1` enforces one level. A UI request does
+not automatically require two specialist handoffs. Explicit parallel work is an
+exception, not the default.
 
 ---
 
@@ -360,7 +358,14 @@ Commands are auto-discovered by OpenCode (no `opencode.json` wiring required).
 | `/pr`               | Create a GitHub pull request        |
 | `/ci`               | Run CI-like checks locally          |
 
-Commands do not select an agent. The active Orchestrator session decides whether to execute directly or delegate.
+Most commands preserve the selected session, including `/ui` and `/design-system`
+in economy mode. The ticket-plan, ticket-pr, and ticket-worktree commands explicitly
+select `orchestrator` for their lifecycle authority. The active primary decides
+whether an allowed independent package warrants delegation.
+
+`/review` stays bounded and non-delegating. The `code-review` skill supports
+committed, staged, unstaged, and relevant untracked changes; an empty branch diff
+does not skip WIP. Implementation does not implicitly authorize commits or PRs.
 
 ### Utility Commands
 
@@ -398,7 +403,9 @@ $ARGUMENTS will be replaced with user input
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
-  "autoupdate": true,
+  "autoupdate": "notify",
+  "model": "openai/gpt-6-astra",
+  "default_agent": "orchestrator",
   "share": "manual",
   "instructions": [
     "instructions/core.md",
@@ -407,21 +414,22 @@ $ARGUMENTS will be replaced with user input
     "instructions/security.md",
     "instructions/git.md",
     "instructions/api.md",
-    "instructions/database.md"
+    "instructions/database.md",
+    "instructions/shell.md"
   ],
   "compaction": {
     "auto": true,
     "prune": true
   },
-  "subagent_depth": 2,
-  "plugin": ["opencode-openai-codex-auth"],
+  "subagent_depth": 1,
+  "plugin": ["opencode-mem@2.23.0"],
   "watcher": {
     "ignore": ["**/node_modules/**", "**/.git/**", "**/dist/**"]
   },
   "permission": {
     "read": { "*": "allow", "*.env": "deny" },
     "edit": { "*": "allow", "**/.env": "deny" },
-    "bash": { "*": "allow", "sudo *": "ask" },
+    "bash": { "*": "ask", "git status": "allow", "git status *": "allow" },
     "task": { "*": "deny" }
   },
   "formatter": {
@@ -449,12 +457,59 @@ $ARGUMENTS will be replaced with user input
 
 ### MCP Servers Configured
 
-| Server         | Purpose                              |
-| -------------- | ------------------------------------ |
-| **context7**   | Up-to-date library documentation     |
-| **gh_grep**    | Search GitHub code examples          |
-| **playwright** | Browser automation and E2E testing   |
-| **sentry**     | Error tracking (disabled by default) |
+| Server             | Purpose                                           |
+| ------------------ | ------------------------------------------------- |
+| **context7**       | Up-to-date library documentation                  |
+| **gh_grep**        | Search GitHub code examples                       |
+| **playwright**     | Browser automation and E2E testing                |
+| **sentry**         | Error tracking (disabled by default)              |
+| **zai-mcp-server** | Specialized vision tools for primary/visual roles |
+
+### Safety and reproducibility
+
+The JSON example above is abbreviated; `opencode.json` and `agents/*.md` are the
+source of truth. The global model fallback, built-in build/plan/general, and the
+normal primary use Astra. Built-in explore deliberately retains Terra `medium`;
+the internal small-model selection remains OpenCode-managed.
+
+Shell commands require approval except narrow inspection patterns. Git commits,
+pushes, resets, and rebases remain approval-gated. Read/edit denials and command
+patterns are not an OS sandbox: use a constrained environment for untrusted
+repositories, scripts, plugins, or browser sessions. Never bypass a denied file
+operation with an interpreter, formatter, or browser tool.
+
+Browser tools are denied globally and enabled for build, primary, and visual
+implementation roles. Page JavaScript evaluation requires approval; Playwright's
+server-side `browser_run_code_unsafe` is denied. Repository analysts have no
+browser, vision-MCP, or memory-mutation tools. UI/UX analysis has limited browser
+inspection, with navigation approval; the parent exercises interactions.
+
+`service.json` is runtime authentication state: ignored by Git, denied to file
+tools, and restricted locally to owner read/write. Never print it or resolved
+authentication settings. Rotation is an operator follow-up: this runtime's CLI
+help and retrieved documentation did not establish a supported rotation command
+for that file. Do not delete it or guess a replacement format. Coordinate the
+owning service/client restart and supported credential change before considering
+the exposed password revoked. Ignoring/chmod alone does not rotate credentials.
+
+Top-level plugin/MCP versions are pinned to locally observed versions:
+Anthropic auth 1.8.1, type-inject 1.5.2, memory 2.23.0, Playwright MCP 0.0.80,
+and Z.AI MCP 0.1.5. These pins do not freeze transitive dependency ranges.
+OpenCode notifies about updates instead of applying them automatically.
+
+Native compaction/pruning remains enabled. The old
+`opencode-dynamic-context-pruning` entry had no installed contents and returned
+npm 404, so it was removed rather than silently replaced. A plugin-assisted
+pruning experiment requires a separately validated dependency. Memory retains
+`inherit`, which uses the prompt's model or a recent model—not an automatic cheap
+extractor. See the benchmark procedure before changing either behavior.
+
+The short `instructions/shell.md` replaces the loaded vendor shell strategy;
+the vendored submodule is preserved unchanged. Guidance does not set environment
+variables automatically or authorize force flags.
+
+**Quit and restart OpenCode after configuration, agent, command, or skill edits.**
+Already-running sessions keep their loaded settings and permissions.
 
 ---
 
@@ -582,10 +637,10 @@ This prevents agents from making changes without proper guidance loaded.
 
 ### Linting Tools
 
-| Script                 | Purpose                  | Command                              |
-| ---------------------- | ------------------------ | ------------------------------------ |
-| **skills_lint.py**     | Validate skill structure | `python3 scripts/skills_lint.py`     |
-| **benchmarks_lint.py** | Validate benchmark files | `python3 scripts/benchmarks_lint.py` |
+| Script                 | Purpose                                | Command                                 |
+| ---------------------- | -------------------------------------- | --------------------------------------- |
+| **skills_lint.py**     | Validate recursively discovered skills | `python3 -B scripts/skills_lint.py`     |
+| **benchmarks_lint.py** | Validate each benchmark scenario       | `python3 -B scripts/benchmarks_lint.py` |
 
 ### Skills Lint Checks
 
@@ -610,13 +665,21 @@ For this repo specifically:
 
 ```bash
 python3 scripts/skills_lint.py
+python3 scripts/skills_lint.py --skills-dir .agents/skills
 python3 scripts/benchmarks_lint.py
-npx prettier --check .
+python3 -B -m unittest discover -s scripts -p 'test_*.py'
+git diff --check
 ```
 
 ### Benchmarks
 
-Benchmarks are regression tests for skills:
+Static lint and unit tests validate configuration contracts and document wiring,
+not live model behavior or a security sandbox. The tests do not load credentials.
+Inspect resolved CLI output only through an allowlist; never dump full resolved
+configuration. Live routing and cost experiments are documented but not yet run
+in [benchmarks/README.md](benchmarks/README.md).
+
+Benchmarks describe behavior expectations for skills:
 
 ```markdown
 Prompt: "Refactor this fat Rails controller action into a service object"
@@ -687,16 +750,12 @@ Expected loads:
 │   ├── testing.md
 │   ├── security.md
 │   └── ...
-├── agents/                   # Premium, economy, and specialist coding agents
+├── agents/                   # Core and specialist coding agents
 │   ├── orchestrator.md
-│   ├── economy-orchestrator.md
 │   ├── principal-engineer.md
 │   ├── implementation-engineer.md
-│   ├── economy-implementation-engineer.md
 │   ├── bounded-worker.md
-│   ├── economy-bounded-worker.md
 │   ├── repository-analyst.md
-│   ├── economy-repository-analyst.md
 │   ├── visual-engineer.md
 │   └── ui-ux-analyst.md
 ├── skills/                  # Skill library
@@ -732,19 +791,19 @@ Expected loads:
 
 This OpenCode configuration provides:
 
-- **35+ specialized skills** with router-first architecture
-- **Premium and economy coding tiers with shared specialist workers**
+- **Task-driven specialized skills** with focused routing
+- **Focused coding agents with shared specialist workers**
 - **25+ commands** for common workflows
 - **Project-local support** for team conventions
 - **Guardrails and linting** for quality assurance
 
 The system is designed to make AI coding assistants:
 
-1. **Predictable** - Same input produces same output
+1. **Predictable** - Scope, authority, and verification are explicit
 2. **Consistent** - Follows conventions across projects
 3. **Production-quality** - Enforces best practices by default
 4. **Efficient** - Loads only necessary context
 
-**Start with `/skills` to see the skill loading workflow in action.**
+**Start with your task. Use `/skills` when guidance selection is unclear.**
 
 # opencode-configs

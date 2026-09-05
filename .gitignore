@@ -3,3 +3,8 @@ __pycache__/
 *.pyc
 .DS_Store
 opencode.json.tui-migration.bak
+.env
+.env.*
+!.env.example
+/service.json
+/browser-outputs/

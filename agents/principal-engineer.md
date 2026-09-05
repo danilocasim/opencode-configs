@@ -1,7 +1,7 @@
 ---
 description: Principal engineer for architecture, high-risk changes, difficult debugging, rescue implementation, and critical technical review
 mode: subagent
-model: openai/gpt-5.6-sol
+model: openai/gpt-6-astra
 variant: xhigh
 permission:
   task: deny
